@@ -14,11 +14,6 @@ const db = require("./db/conn");
 
 const port = process.env.PORT;
 
-console.log(path.join(__dirname, '..','client','build'));
-
-app.use(express.static(path.join(__dirname, '..','client','build')));
-
-
 app.use(cors());
 app.use(express.json());
 
