@@ -56,10 +56,12 @@ const App = () => {
   // if(!user && locationPlace()){
   //    return(<ErrorPage></ErrorPage>) 
   // }
+  
+ 
 
   return (
     <>
-      <Navbar/>
+        {getUserInfo() ? <Navbar /> : null}
         <Routes>
           <Route exact path="/" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
