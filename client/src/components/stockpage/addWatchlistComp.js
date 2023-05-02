@@ -2,11 +2,12 @@ import FormInput from "../register/FormInput";
 import React, { useState} from "react";
 import axios from "axios";
 import getUserInfo from '../../utilities/decodeJwt';
-import {Button, Card, Form} from 'react-bootstrap';
+import {Button, Card } from 'react-bootstrap';
 import AlertFunction from '../register/AlertMessage';
+import {link2} from '../../utilities/api';
 import "../register/loginPage.css"
 
-const url = "http://localhost:8085/addWatchlistItem";
+const url = `${link2}/addWatchlistItem`;
 
 const AddWatchlistComp = () => {
 
@@ -73,7 +74,7 @@ const AddWatchlistComp = () => {
 
   return (
     <Card className="loginCard">
-      <Card.Header><h2 class="text-white">Add Stock to Watchlist</h2></Card.Header>
+      <Card.Header><h2 className="text-white">Add Stock to Watchlist</h2></Card.Header>
       <Card.Body>
         {inputs.map((input) => (
           <FormInput

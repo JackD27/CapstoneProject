@@ -4,6 +4,7 @@ import getUserInfo from '../../utilities/decodeJwt';
 import { key }from '../../utilities/api';
 import { Table} from 'react-bootstrap';
 import ListComp from './listComp'
+import {link2} from '../../utilities/api';
 import "../register/loginPage.css"
 
 const BASE_URL = "https://finnhub.io/api/v1/quote?symbol=";
@@ -31,7 +32,7 @@ const StockedOwnedComp = (props) => {
     let promises = []
 
         
-    const response = await fetch(`http://localhost:8085/portfolioUser/${getUserInfo().user_id.toString()}`);
+    const response = await fetch(`${link2}/portfolioUser/${getUserInfo().user_id.toString()}`);
     
     if (!response.ok) {
       const message = `An error occurred: ${response.statusText}`;
@@ -63,16 +64,20 @@ const StockedOwnedComp = (props) => {
     })
     
     }catch(error){
-      
     }
-    
   }
 
   async function getNumber() {
     let sum = 0
 
     stocksData.slice(0, props.length).map((watchlistItem) => {
-      const profit = (watchlistItem.info.c * watchlistItem.shares) - (watchlistItem.priceWhenBought * watchlistItem.shares)
+      let currPriceBought;
+      if (watchlistItem.info.c === undefined || watchlistItem.info.c === null || watchlistItem.info.c === 0) {
+        currPriceBought = 0
+      }else{
+        currPriceBought = watchlistItem.priceWhenBought
+      }
+      const profit = (watchlistItem.info.c * watchlistItem.shares) - (currPriceBought * watchlistItem.shares)
       sum += parseFloat(profit);
       setTotalprofit(Number(sum).toFixed(2))
     })};
@@ -80,12 +85,7 @@ const StockedOwnedComp = (props) => {
 
 
   useEffect(() => {
-    
     getList();
-
-     
-    
-
   }, [list.length]);  
 
   useEffect(() => {
@@ -96,24 +96,29 @@ const StockedOwnedComp = (props) => {
     const deletePortfolioItem = {
         portfolioitem_id: targetId,
       }
-    const url = "http://localhost:8085/deletePortfolioItem";
+    const url = `${link2}/deletePortfolioItem`;
 
     await axios.delete(url, {
         data: deletePortfolioItem,
       })
       
-    
-    const newList = list.filter((el) => el.id !== el.id); // This causes a re-render because we change state. Helps cause a re-render.
+    const newList = list.filter((el) => el.portfolioitem_id !== targetId); // This causes a re-render because we change state. Helps cause a re-render.
     setList(newList);  // This causes a re-render because we change state.
-    
 }
   function stockPortfolioList() {
     return stocksData.slice(0, props.length).map((watchlistItem) => {
-      const profit = (watchlistItem.info.c * watchlistItem.shares) - (watchlistItem.priceWhenBought * watchlistItem.shares)
+      let currPriceBought;
+      if (watchlistItem.info.c === undefined || watchlistItem.info.c === null || watchlistItem.info.c === 0) {
+        currPriceBought = 0
+      }else{
+        currPriceBought = watchlistItem.priceWhenBought
+      }
+      const profit = (watchlistItem.info.c * watchlistItem.shares) - (currPriceBought * watchlistItem.shares)
       return (
         <ListComp show={props.show}
           stockTicker={watchlistItem.name}
           date={watchlistItem.date}
+          delete={props.delete}
           price={watchlistItem.priceWhenBought}
           currPrice={watchlistItem.info.c}
           //percentage={Number(percent).toFixed(2)}
@@ -121,7 +126,6 @@ const StockedOwnedComp = (props) => {
           profit={Number(profit).toFixed(2)}
           onDeleteClickHandler={() => deleteStockPortfolioItem(watchlistItem.id)}
           key={watchlistItem.id}
-          
         />
       );
     });
@@ -140,7 +144,7 @@ const StockedOwnedComp = (props) => {
           <th>Shares</th>
           <th>Current Price</th>
           <th>Profit</th>
-          <th>Delete</th>
+          {props.delete && <th>Delete</th>}
         </tr>
       </thead>
       <tbody>

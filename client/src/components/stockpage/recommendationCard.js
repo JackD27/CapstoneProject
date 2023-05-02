@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {Card} from 'react-bootstrap';
 import "../register/loginPage.css"
+import {link2} from '../../utilities/api';
 import getUserInfo from '../../utilities/decodeJwt';
 import RecommendationStatsComp from "./recommendationStatsComp";
 
@@ -9,7 +10,7 @@ const RecommendationCard = () => {
 
     async function getList() {
             
-        const response = await fetch(`http://localhost:8085/watchlistUser/${getUserInfo().user_id.toString()}`);
+        const response = await fetch(`${link2}/watchlistUser/${getUserInfo().user_id.toString()}`);
         
         if (!response.ok) {
           const message = `An error occurred: ${response.statusText}`;
@@ -21,7 +22,7 @@ const RecommendationCard = () => {
         const fetchedList = await response.json();
         
     
-        setList(fetchedList);  // update state.  when state changes, we automatically re-render.
+        setList(fetchedList);  
         
         }catch(error){
           
@@ -50,8 +51,8 @@ const RecommendationCard = () => {
             <Card.Header>
               <h2 style={{ color: "#14A44D" }}>Stock Recommendations</h2>
               <select style={{marginTop: "5px"}} name="stockName"onChange={onChange}>
-                {list.map((input) =>(
-                <option>{input.stockTicker}</option>
+                {list.map((input, i) =>(
+                <option key={i}>{input.stockTicker}</option>
           ))}
         </select>
             </Card.Header>

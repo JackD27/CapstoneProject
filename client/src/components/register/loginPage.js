@@ -1,18 +1,16 @@
-import FormInput from "./FormInput";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import getUserInfo from '../../utilities/decodeJwt';
 import Container from 'react-bootstrap/Container';
-import {Col, Row, Button, Card} from 'react-bootstrap';
+import {Col, Row, Button, Card, Form} from 'react-bootstrap';
 import LandingPage from "./Landingpage";
 import AlertFunction from './AlertMessage';
+import {link2} from '../../utilities/api';
 import "./loginPage.css"
+import "./formInput.css";
 
-const url = "http://localhost:8085/login";
-
-
-
+const newUrl = `${link2}/login`
 
 const Login2 = () => {
 
@@ -25,6 +23,7 @@ const Login2 = () => {
   const [user, setUser] = useState(null)
   const [error, setError] = useState("");
 
+
   useEffect(() => {
 
     setUser(getUserInfo())
@@ -32,12 +31,10 @@ const Login2 = () => {
 
   }, []);
 
-  if(user) {
-    navigate('/')
-    return
-  }
 
-  
+  if(user) {
+    navigate('/dashboard')
+  }
 
   const footMessage = () => {
     if (error) {
@@ -45,40 +42,17 @@ const Login2 = () => {
     } 
   };
 
-  const handleKeyPress = (event) => {
-    if(event.key === 'Enter'){
-      handleSubmit()
-    }
-  }
-
-  const inputs = [
-    {
-      id: 1,
-      name: "username",
-      type: "text",
-      placeholder: "Username",
-      label: "Username",
-      pattern: "^[A-Za-z0-9]{5,15}$",
-      required: true,
-    },
-    {
-      id: 2,
-      name: "password",
-      type: "password",
-      label: "Password",
-      placeholder: "Password",
-      required: true,
-    },
-  ];
-
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     try {
-      const { data: res } = await axios.post(url, values);
+      const { data: res } = await axios.post(newUrl, values);
       const { accessToken } = res;
       //store token in localStorage
       localStorage.setItem("accessToken", accessToken);
-      navigate("/");
-      window.location.reload();
+      window.location.replace("/dashboard")
+      
+      
     } catch (error) {
       if (
         error.response &&
@@ -90,8 +64,8 @@ const Login2 = () => {
     }
   };
 
-  const onChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
+  const onChange = ({currentTarget: input}) => {
+    setValues({ ...values, [input.name]: input.value });
   };
 
   return (
@@ -102,23 +76,22 @@ const Login2 = () => {
       </Col>
       <Col>
     <Card className="loginCard">
-      <Card.Header><h2 class="text-white">Log In</h2></Card.Header>
+      <Card.Header><h2 className="text-white">Log In</h2></Card.Header>
       <Card.Body>
-        {inputs.map((input) => (
-          <FormInput
-            key={input.id}
-            {...input}
-            value={values[input.name]}
-            onChange={onChange}
-            onKeyPress={handleKeyPress}
-          />
-        ))}
-        </Card.Body>
-        <Card.Footer>
-        <Button variant="success" onClick={handleSubmit}>Log In</Button>
-        <Button variant="outline-success" style={{marginLeft: 250, color: "white"}} onClick={() => navigate("/register")}>Create Account?</Button>
+      <Form>
+      <Form.Group className="mb-3" controlId="formBasicUsername">
+        <Form.Label style={{color: "rgb(151, 151, 151)"}}>Username</Form.Label>
+        <Form.Control required={true} type="text" placeholder="Enter Username" pattern="^[A-Za-z0-9]{5,15}$" name="username"onChange={onChange} />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Label style={{color: "rgb(151, 151, 151)"}}>Password</Form.Label>
+        <Form.Control required={true} type="password" placeholder="Enter Password" name="password"onChange={onChange} />
+      </Form.Group>
+      <Button variant="success" type="submit" onClick={handleSubmit}>Log In</Button>
+      <Button variant="outline-success" style={{marginLeft: 250, color: "white"}} onClick={() => navigate("/register")}>Create Account?</Button>
         {footMessage()}
-        </Card.Footer>
+      </Form>
+        </Card.Body>
     </Card>
     </Col>
       </Row>

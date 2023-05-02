@@ -4,12 +4,11 @@ import getUserInfo from '../../utilities/decodeJwt';
 import { key }from '../../utilities/api';
 import { Table} from 'react-bootstrap';
 import ListComp from './listComp'
+import {link2} from '../../utilities/api';
 import "../register/loginPage.css"
 
 const BASE_URL = "https://finnhub.io/api/v1/quote?symbol=";
 const KEY_URL = `&token=${key}`;
-
-
 
 const WatchlistComp = (props) => {
   const [list, setList] = useState([])
@@ -29,7 +28,7 @@ const WatchlistComp = (props) => {
     let promises = []
 
         
-    const response = await fetch(`http://localhost:8085/watchlistUser/${getUserInfo().user_id.toString()}`);
+    const response = await fetch(`${link2}/watchlistUser/${getUserInfo().user_id.toString()}`);
     
     if (!response.ok) {
       const message = `An error occurred: ${response.statusText}`;
@@ -69,20 +68,15 @@ const WatchlistComp = (props) => {
     const deleteWatchlistItem = {
         watchlistitem_id: targetId,
       }
-    const url = "http://localhost:8085/deleteWatchlistItem";
+    const url = `${link2}/deleteWatchlistItem`;
 
     await axios.delete(url, {
         data: deleteWatchlistItem,
       })
 
-      const newList = list.filter((el) => el.id !== el.id); // This causes a re-render because we change state. Helps cause a re-render.
+      const newList = list.filter((el) => el.watchlistitem_id !== targetId); // This causes a re-render because we change state. Helps cause a re-render.
       setList(newList);  // This causes a re-render because we change state.
-      
-
 }
-
-
-
 
   function watchlistList() {
     return stocksData.slice(0, props.length).map((watchlistItem) => {
@@ -91,6 +85,7 @@ const WatchlistComp = (props) => {
         <ListComp show={props.show}
         showPercent={props.showPercent}
           stockTicker={watchlistItem.name}
+          delete={props.delete}
           date={watchlistItem.date}
           price={watchlistItem.info.c}
           percentage={Number(percent).toFixed(2)}
@@ -110,7 +105,7 @@ const WatchlistComp = (props) => {
           <th>Ticker</th>
           <th>Percentage Change of Day</th>
           <th>Current Price</th>
-          <th>Delete</th>
+          {props.delete && <th>Delete</th>}
         </tr>
       </thead>
       <tbody>

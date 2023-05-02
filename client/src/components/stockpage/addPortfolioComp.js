@@ -2,11 +2,12 @@ import FormInput from "../register/FormInput";
 import React, { useState } from "react";
 import axios from "axios";
 import getUserInfo from '../../utilities/decodeJwt';
-import {Button, Card, Form} from 'react-bootstrap';
+import {Button, Card } from 'react-bootstrap';
 import AlertFunction from '../register/AlertMessage';
+import {link2} from '../../utilities/api';
 import "../register/loginPage.css"
 
-const url = "http://localhost:8085/addPortfolioItem";
+const url = `${link2}/addPortfolioItem`;
 
 const AddPortfolioComp = () => {
   const [error, setError] = useState("");
@@ -59,7 +60,7 @@ const AddPortfolioComp = () => {
         name: "price",
         type: "number",
         min: "0",
-        label: "Price",
+        label: "Price purchased at",
         step: "0.01",
         placeholder: "Price",
         required: true,
@@ -69,7 +70,7 @@ const AddPortfolioComp = () => {
         name: "shares",
         type: "number",
         min: "0",
-        label: "Shares",
+        label: "Number of shares you bought",
         step: "0.01",
         placeholder: "Shares",
         required: true,
@@ -107,7 +108,7 @@ const AddPortfolioComp = () => {
 
   return (
     <Card className="loginCard">
-      <Card.Header><h2 class="text-white">Add Stock to Portfolio</h2></Card.Header>
+      <Card.Header><h2 className="text-white">Add Stock to Portfolio</h2></Card.Header>
       <Card.Body>
         {inputs.map((input) => (
           <FormInput

@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const path = require('path');
 
 // Model
 const portfolioModel = require("./models/portfolioModel");
@@ -11,7 +12,7 @@ const watchlistModel = require("./models/watchlistModel");
 // Database
 const db = require("./db/conn");
 
-const SERVER_PORT = 8085;
+const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
@@ -28,8 +29,8 @@ userModel.hasMany(watchlistModel, {foreignKey: 'userId'});
 
 db.sync()
   .then((result) => {
-    app.listen(SERVER_PORT, (req, res) => {
-      console.log(`The Moneypad Server is running on port ${SERVER_PORT}`);
+    app.listen(port, (req, res) => {
+      console.log(`The Moneypad Server is running on port ${port}`);
     });
   })
   .catch((err) => {

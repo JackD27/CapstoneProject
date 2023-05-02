@@ -10,10 +10,6 @@ const KEY_URL = `&token=${key}`;
 
 
 const RecommendationStatsComp = (props) => {
-
-
-    const [nameData, setNameData] = useState(props.name);
-    
   const [stocksData, setStocksData] = useState({});
 
   async function getStocksData(stock){
@@ -24,51 +20,34 @@ const RecommendationStatsComp = (props) => {
       });
   };
 
-  
-
-  
-
+  async function getList() {
+    let tempData = []
+    let promises = []
+        
+   try {
+    promises.push(getStocksData(props.name).then(res =>{
+        tempData.push({name: props.name, info: res.data})
+    }))
+    
+    Promise.all(promises).then(()=>{
+      setStocksData(tempData);
+    })
+    
+    }catch(error){
+        console.error("Error", error.message);
+    }
+    
+  }
 
   useEffect(() => {
-
-    async function getList() {
-
-        let tempData = []
-        let promises = []
-    
-            
-       try {
-        
-        promises.push(getStocksData(props.name).then(res =>{
-            tempData.push({name: props.name, info: res.data})
-        }))
-        
-        Promise.all(promises).then(()=>{
-          setStocksData(tempData);
-        })
-        
-        }catch(error){
-            console.error("Error", error.message);
-        }
-        
-      }
-
-    
-
     getList(); 
-
-    //setNameData(props.name)
-
-    console.log(stocksData)
-    
-
-
   }, [props.name]);  
 
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
   function dataGrabber(){
     let data = []
+    try{
     if (stocksData.length > 0){
         data = [
             {
@@ -105,15 +84,14 @@ const RecommendationStatsComp = (props) => {
             },
           ];
     }
+    
     return data
+  }catch(error){
+    console('Error fetching data', error.message)
+  }
   }
 
-  
-
- 
-
   const BarChartComp = ({dataVals}) => (
-    
     <BarChart
             width={550}
             height={300}
@@ -126,22 +104,21 @@ const RecommendationStatsComp = (props) => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" interval={0} />
-            <YAxis />
+            <XAxis dataKey="name" interval={0} stroke="white" />
+            <YAxis stroke="white" />
             <Tooltip />
             <Legend />
             <Bar dataKey="StrongSell" stackId="a" fill="#990C0E" />
             <Bar dataKey="Sell" stackId="a" fill="#E5191C" />
-            <Bar dataKey="Hold" stackId="a" fill="#D2CF1A" />
-            <Bar dataKey="Buy" stackId="a" fill="#14A44D" />
-            <Bar dataKey="StrongBuy" stackId="a" fill="#2D8E5D" />
+            <Bar dataKey="Hold" stackId="b" fill="#D2CF1A" />
+            <Bar dataKey="Buy" stackId="c" fill="#14A44D" />
+            <Bar dataKey="StrongBuy" stackId="c" fill="#2D8E5D" />
           </BarChart>
   );
-
-
   return (
-    <><h1 style={{ color: "white" }}>{props.name}</h1>
-      {Object.keys(stocksData).length > 0 ? <><BarChartComp dataVals={dataGrabber()}/></>:"Nothing"}
+    <>
+    <h1 style={{ color: "white" }}>{props.name}</h1>
+      {Object.keys(stocksData).length > 0 && Object.keys(stocksData[0].info).length !== 0 ? <><BarChartComp dataVals={dataGrabber()}/></>:<h4 style={{ color: "red" }}>Error Occurred Fetching Data</h4> }
       </>
   );
 };

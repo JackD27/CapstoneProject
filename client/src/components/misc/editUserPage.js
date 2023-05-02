@@ -4,10 +4,11 @@ import axios from "axios";
 import getUserInfo from '../../utilities/decodeJwt';
 import {Button, Card } from 'react-bootstrap';
 import AlertFunction from '../register/AlertMessage';
+import {link2} from '../../utilities/api';
 import "../register/loginPage.css"
 
-const url = "http://localhost:8085/editUser";
-const loginUrl = "http://localhost:8085/login";
+const url = `${link2}/editUser`;
+const loginUrl = `${link2}/login`;
 
 const ChangeSettingsComp = () => {
 
@@ -102,7 +103,7 @@ const ChangeSettingsComp = () => {
 
   return (
     <Card className="loginCard">
-      <Card.Header><h2 class="text-white">Change Settings</h2></Card.Header>
+      <Card.Header><h2 className="text-white">Change Settings</h2></Card.Header>
       <Card.Body>
         {inputs.map((input) => (
           <FormInput

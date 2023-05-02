@@ -35,18 +35,27 @@ on stocks and put them into based on the investor’s strategy.
 
 ### Running this project
 
--   git clone https://github.com/JackD27/CapstoneProject.git
+```sh
+    git clone https://github.com/JackD27/CapstoneProject.git
+```
 
-#### Server
+* Server
+    - `cd server` To access Server folder
+    - `npm i` install all server dependencies
+    - `npm start` Start the server
 
--   cd server
--   npm i
--   npm start
 
-#### Client
+* Client
+    - `cd client` To access Client folder  
+    - `npm i` install all client dependencies
+    - `npm start` Start the front-end
+    
+**Disclaimer:** I didn't push the .env file into the server folder. You will have to make your own database. I used PostgreSQL from Heroku.
+You will also need a Secret Access Token in the .env as well for JWT.
 
--   cd client
--   npm i
--   npm start
+### Example Pictures
+#### Dashboard Page
+![DashboardPageCapstone](https://user-images.githubusercontent.com/103354115/235334003-81909ba2-e0b4-46f5-adc2-2ee84c5bd8be.png)
 
-**Disclaimer:** I didn't push the .env file into the server folder. You will have to make your own database. 
+#### Stock Pag
+![StockPageCapstone](https://user-images.githubusercontent.com/103354115/235334009-c4b67c9b-6d29-4e63-9912-6a548f5254db.png)
