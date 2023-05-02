@@ -40,9 +40,9 @@ const portfolioValidation = (data) => {
 const transactionValidation = (data) => {
     const transactionValidationSchema = zod.object({
         name: zod.string().min(1, "Enter a name for the transaction."),
-        description: zod.string(),
-        date: zod.string(),
-        price: zod.string(1, "Enter a valid number."),
+        description: zod.string("Enter a description for the transaction."),
+        date: zod.string('Enter a date for the transaction.'),
+        price: zod.number(1, "Enter a valid number.").min(.01, "Enter a price above 1 cent."),
         category: zod.string().min(1, "Pick a something for main category."),
         category2: zod.string().min(1, "Pick something for second category."),
     })
